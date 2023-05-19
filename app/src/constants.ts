@@ -1,0 +1,2 @@
+export const CONNECT_FOUR = "0xF998c96805E884226d52fe5752B57F4A6FDecAec"
+export const BOARD_SIZE = 49;
