@@ -1,4 +1,5 @@
 import { PropsWithChildren } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChallengeForm } from "../components/ChallengeForm";
 import { SearchGameForm } from "../components/SearchGameForm";
 import { Panel } from "../components/Panel";
@@ -16,18 +17,18 @@ export function HomePage() {
           <ChallengeForm />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-          <Panel className="w-full">
-            <h2 className="text-center text-lg">New Games</h2>
+          <Panel className="w-full p-0">
+            <h2 className="text-center text-lg px-6 pt-6">New Games</h2>
             <GameProposalEvents />
           </Panel>
 
-          <Panel className="w-full">
-            <h2 className="text-center text-lg">Game Activity</h2>
+          <Panel className="w-full p-0">
+            <h2 className="text-center text-lg px-6 pt-6">Game Activity</h2>
             <GameMoveEvents />
           </Panel>
 
-          <Panel className="w-full">
-            <h2 className="text-center text-lg">Finished Games</h2>
+          <Panel className="w-full p-0">
+            <h2 className="text-center text-lg px-6 pt-6">Finished Games</h2>
             <GameWonEvents />
           </Panel>
         </div>
@@ -38,14 +39,21 @@ export function HomePage() {
 
 function GameProposalEvents() {
   const { data: proposals } = useGameProposalEvents();
+  const navigate = useNavigate();
   return (
-    <div className="shadow border-b border-gray-200 sm:rounded-lg">
+    <div className="border-b border-gray-200">
       <div className="flex flex-col overflow-x-auto w-full">
         <div className="sm:-mx-2">
           <div className="inline-block py-2 sm:px-2">
             <table className="min-w-full text-left text-sm font-light divide-y divide-gray-200">
               <thead>
                 <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+                  >
+                    #
+                  </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -68,21 +76,29 @@ function GameProposalEvents() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {proposals &&
-                  proposals.proposalEvents.map((proposalEvent) => (
-                    <tr key={proposalEvent.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {toCompact(proposalEvent.challenged)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {toCompact(proposalEvent.challenger)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(
-                          Number(proposalEvent.blockTimestamp) * 1000
-                        ).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
+                  [...proposals.proposalEvents]
+                    .sort(
+                      (a, b) =>
+                        parseInt(b.blockNumber) - parseInt(a.blockNumber)
+                    )
+                    .map((proposalEvent, index, events) => (
+                      <tr key={proposalEvent.id} onClick={() => navigate(`/game/${events.length - index}`)}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {events.length - index}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {toCompact(proposalEvent.challenged)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {toCompact(proposalEvent.challenger)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(
+                            Number(proposalEvent.blockTimestamp) * 1000
+                          ).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
@@ -94,6 +110,7 @@ function GameProposalEvents() {
 
 function GameMoveEvents() {
   const { data: moves } = useMovePerformedEvents();
+  const navigate = useNavigate();
   return (
     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
       <div className="flex flex-col overflow-x-auto w-full">
@@ -122,10 +139,15 @@ function GameMoveEvents() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {moves &&
-                  moves.moveEvents.map((moveEvent) => (
-                    <tr key={moveEvent.id}>
+                  [...moves.moveEvents]
+                    .sort(
+                      (a, b) =>
+                        parseInt(b.blockNumber) - parseInt(a.blockNumber)
+                    )
+                    .map((moveEvent) => (
+                    <tr key={moveEvent.id} onClick={() => navigate(`/game/${moveEvent.gameId}`)}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {moveEvent.gameId}
                       </td>
@@ -150,6 +172,7 @@ function GameMoveEvents() {
 
 function GameWonEvents() {
   const { data: wins } = useGameWonEvents();
+  const navigate = useNavigate();
   return (
     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
       <div className="flex flex-col overflow-x-auto w-full">
@@ -180,8 +203,13 @@ function GameWonEvents() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {wins &&
-                  wins.winEvents.map((winEvent) => (
-                    <tr key={winEvent.id}>
+                  [...wins.winEvents]
+                    .sort(
+                      (a, b) =>
+                        parseInt(b.blockNumber) - parseInt(a.blockNumber)
+                    )
+                    .map((winEvent) => (
+                    <tr key={winEvent.id} onClick={() => navigate(`/game/${winEvent.gameId}`)}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {toCompact(winEvent.winner)}
                       </td>
