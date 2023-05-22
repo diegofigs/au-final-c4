@@ -1,9 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly ALCHEMY_ID: string
-  readonly ALCHEMY_SEPOLIA_URL: string;
-  readonly MNEMONIC: string;
+  readonly VITE_APP_ALCHEMY_API_KEY: string
 }
 
 interface ImportMeta {
