@@ -72,26 +72,26 @@ function BoardColumn(props: BoardColumnProps) {
   const isCurrentTurn =
     (isPlayer1 && isPlayer1Turn) || (isPlayer2 && isPlayer2Turn);
   const isActive = !finished;
+  const isDisabled = !isCurrentTurn || !isActive;
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
-      if (isCurrentTurn && isActive) {
+      if (!isDisabled) {
         makeMove?.();
       }
     }
   };
 
   const handleClick = () => {
-    if (isCurrentTurn && isActive) {
       makeMove?.();
-    }
   };
   return (
-    <div
+    <button
+      disabled={isDisabled}
       key={`column-${i}`}
       className={`flex flex-col flex-grow board-col ${
-        isCurrentTurn && isActive
-          ? "hover:shadow-2xl hover:border-purple-500 transform transition-all duration-200 hover:scale-105 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:scale-105"
+          !isDisabled
+          ? "hover:shadow-2xl hover:border-purple-500 transform transition-all duration-200 hover:scale-105 disabled:cursor-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:scale-105"
           : ""
       }`}
       onClick={handleClick}
@@ -105,7 +105,7 @@ function BoardColumn(props: BoardColumnProps) {
         return (
           <div
             key={`row-${i}-${j}`}
-            className="bg-blue-700 flex justify-center p-2 md:p-3"
+            className="bg-blue-700 w-full flex justify-center p-1 sm:p-2 xl:p-3"
           >
             <div
               className={`disc ${isDisc ? "animate-bounce" : ""} ${
@@ -119,6 +119,6 @@ function BoardColumn(props: BoardColumnProps) {
           </div>
         );
       })}
-    </div>
+    </button>
   );
 }

@@ -29,6 +29,9 @@ export function padTo(length: number, value: string) {
   return Array.from(Array(lengthToPad).keys()).fill(0).join("").concat(value);
 }
 
-export function toCompact(address: Address | string) {
-  return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`
+export function toCompact(address: Address | string, chars = 4) {
+  return `${address.slice(0, 2 + chars)}...${address.slice(
+    address.length - chars,
+    address.length
+  )}`;
 }

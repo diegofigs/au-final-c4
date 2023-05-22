@@ -16,15 +16,19 @@
 
 @layer components {
   .panel {
-    @apply max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-blue-100 shadow-md rounded-md;
+    @apply p-2 md:p-4 lg:p-6 bg-white shadow-md rounded-md;
   }
   .board-panel {
-    @apply bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 p-6 rounded-md shadow-lg; 
+    @apply bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 rounded-md shadow-lg; 
   }
   .board-col {
-    @apply border-2 border-blue-700 rounded-lg overflow-hidden shadow-lg;
+    @apply py-1 md:py-2 bg-blue-700 border-2 border-blue-700 rounded-lg overflow-hidden shadow-lg;
   }
   .disc {
-    @apply rounded-full h-12 md:h-16 lg:h-20 w-12 md:w-16 lg:w-20 border-4 border-white shadow-lg;
+    @apply rounded-full h-6 sm:h-12 md:h-14 lg:h-16 xl:h-20 w-6 sm:w-12 md:w-14 lg:w-16 xl:w-20 border-2 sm:border-4 border-white shadow-lg;
   }
+}
+
+input, h1, h2, h3, h4, h5, h6 {
+  width: unset;
 }
