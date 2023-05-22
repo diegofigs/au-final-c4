@@ -1,0 +1,27 @@
+type ProposalEvent @entity(immutable: true) {
+  id: Bytes!
+  challenger: Bytes! # address
+  challenged: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type WinEvent @entity(immutable: true) {
+  id: Bytes!
+  winner: Bytes! # address
+  gameId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MoveEvent @entity(immutable: true) {
+  id: Bytes!
+  mover: Bytes! # address
+  gameId: BigInt! # uint256
+  row: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

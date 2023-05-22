@@ -1,0 +1,30 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ConnectFour
+    network: mumbai
+    source:
+      address: "0x2A20791964a1275d8f3d24f959185E1551e2B6C9"
+      abi: ConnectFour
+      startBlock: 35880727
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - GameProposed
+        - GameWon
+        - MovePerformed
+      abis:
+        - name: ConnectFour
+          file: ./abis/ConnectFour.json
+      eventHandlers:
+        - event: GameProposed(indexed address,indexed address)
+          handler: handleGameProposed
+        - event: GameWon(indexed address,uint256)
+          handler: handleGameWon
+        - event: MovePerformed(indexed address,uint256,uint8)
+          handler: handleMovePerformed
+      file: ./src/connect-four.ts
