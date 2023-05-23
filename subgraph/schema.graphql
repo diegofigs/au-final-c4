@@ -25,3 +25,19 @@ type MoveEvent @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type Game @entity {
+  id: String!
+  player1: Bytes!
+  player2: Bytes!
+  gameId: BigInt!
+  moves: Int!
+  finished: Boolean!
+  board1: BigInt!
+  board2: BigInt!
+}
+
+type Stats @entity(singleton: true) {
+  id: Bytes!
+  gameId: BigInt!
+}
