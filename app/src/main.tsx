@@ -47,7 +47,7 @@ const wagmiConfig = createConfig({
 });
 
 const client = new ApolloClient({
-  uri: "https://api.studio.thegraph.com/query/47213/chain-4-testnet/v0.0.4",
+  uri: "https://api.studio.thegraph.com/query/47213/chain-4-testnet/v0.0.5",
   cache: new InMemoryCache(),
 });
 

@@ -33,6 +33,7 @@ export function Board({ boards, game, gameId }: BoardProps) {
         {BOARD_GRID.map((column, i) => {
           return (
             <BoardColumn
+              key={`column-${i}`}
               game={game}
               gameId={gameId}
               column={column}
@@ -61,7 +62,13 @@ function BoardColumn(props: BoardColumnProps) {
     args: [BigInt(gameId), i],
     value: BigInt(0),
   });
-  const { write: makeMove } = useConnectFourMakeMove(config);
+  const {
+    write: makeMove,
+    isLoading,
+    isError,
+    isSuccess,
+    reset,
+  } = useConnectFourMakeMove(config);
   const signer = useAccount();
 
   const [player1, player2, moves, finished] = game;
@@ -76,25 +83,22 @@ function BoardColumn(props: BoardColumnProps) {
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
-      if (!isDisabled) {
-        makeMove?.();
-      }
+      makeMove?.();
     }
   };
 
-  const handleClick = () => {
-      makeMove?.();
-  };
   return (
     <button
       disabled={isDisabled}
-      key={`column-${i}`}
-      className={`flex flex-col flex-grow board-col ${
-          !isDisabled
+      className={`flex flex-col flex-grow board-col ${!isDisabled
           ? "hover:shadow-2xl hover:border-purple-500 transform transition-all duration-200 hover:scale-105 disabled:cursor-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:scale-105"
           : ""
-      }`}
-      onClick={handleClick}
+        } ${isLoading ? "animate-pulse" : ""} ${isError ? "animate-shake bg-red-500" : ""
+        }`}
+      onClick={() => {
+        reset();
+        makeMove?.();
+      }}
       onKeyDown={handleKeyPress}
       tabIndex={0}
     >
@@ -105,16 +109,17 @@ function BoardColumn(props: BoardColumnProps) {
         return (
           <div
             key={`row-${i}-${j}`}
-            className="bg-blue-700 w-full flex justify-center p-1 sm:p-2 xl:p-3"
+            className={`w-full flex justify-center p-1 sm:p-2 xl:p-3 ${isLoading ? "animate-pulse" : ""
+              } ${isError ? "animate-shake bg-red-500" : ""} ${isSuccess ? "animate-drop" : ""
+              }`}
           >
             <div
-              className={`disc ${isDisc ? "animate-bounce" : ""} ${
-                isBoard1
+              className={`disc ${isDisc ? "animate-bounce" : ""} ${isBoard1
                   ? "bg-red-500"
                   : isBoard2
-                  ? "bg-yellow-500"
-                  : "bg-gray-300"
-              }`}
+                    ? "bg-yellow-500"
+                    : "bg-gray-300"
+                }`}
             />
           </div>
         );
