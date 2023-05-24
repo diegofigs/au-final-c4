@@ -31,7 +31,7 @@ type GetMovesResult = {
   moveEvents: MoveEvent[];
 };
 
-export function useMovePerformedEvents(page: number, pageSize: number) {
+export function useMoveEvents(page: number, pageSize: number) {
   const moves = useQuery<GetMovesResult>(GET_MOVES, {
     variables: {
       offset: (page - 1) * pageSize,

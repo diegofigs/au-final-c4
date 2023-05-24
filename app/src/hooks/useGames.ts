@@ -1,4 +1,3 @@
-
 import { gql, useQuery } from "@apollo/client";
 
 const GET_GAMES = gql`

@@ -29,7 +29,7 @@ type GetProposalsResult = {
   proposalEvents: ProposalEvent[];
 };
 
-export function useGameProposalEvents(page: number, pageSize: number) {
+export function useProposalEvents(page: number, pageSize: number) {
   const proposals = useQuery<GetProposalsResult>(GET_PROPOSALS, {
     variables: {
       offset: (page - 1) * pageSize,

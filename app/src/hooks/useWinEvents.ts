@@ -29,7 +29,7 @@ type GetWinsResult = {
   winEvents: WinEvent[];
 };
 
-export function useGameWonEvents(page: number, pageSize: number) {
+export function useWinEvents(page: number, pageSize: number) {
   const wins = useQuery<GetWinsResult>(GET_WINS, {
     variables: {
       offset: (page - 1) * pageSize,
