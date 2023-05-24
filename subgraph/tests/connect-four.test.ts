@@ -6,9 +6,8 @@ import {
   beforeAll,
   afterAll,
   createMockedFunction,
-  logStore
 } from "matchstick-as/assembly/index";
-import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import {
   handleGameProposed,
   handleGameWon,
@@ -64,7 +63,6 @@ describe("Events", () => {
 
   test("ProposalEvent created and stored", () => {
     assert.entityCount("ProposalEvent", 1);
-
     assert.fieldEquals("ProposalEvent", id, "challenger", user);
     assert.fieldEquals("ProposalEvent", id, "challenged", opponent);
 
@@ -114,16 +112,6 @@ describe("Entities", () => {
     clearStore();
   });
 
-  test("Stats track gameId", () => {
-    assert.entityCount("Stats", 1);
-    assert.fieldEquals(
-      "Stats",
-      Bytes.fromI32(0).toHexString(),
-      "gameId",
-      gameId
-    );
-  });
-
   test("Game created on ProposalEvent", () => {
     assert.entityCount("Game", 1);
     assert.fieldEquals("Game", gameId, "gameId", gameId);
@@ -163,9 +151,16 @@ describe("Entities", () => {
       BigInt.fromString(gameId)
     );
     handleGameWon(gameWonEvent);
-    logStore();
 
     assert.entityCount("Game", 1);
     assert.fieldEquals("Game", gameId, "finished", "true");
+  });
+
+  test("Stat track events count", () => {
+    assert.entityCount("Stat", 1);
+    assert.fieldEquals("Stat", "1", "gameId", gameId);
+    assert.fieldEquals("Stat", "1", "proposals", "1");
+    assert.fieldEquals("Stat", "1", "moves", "1");
+    assert.fieldEquals("Stat", "1", "wins", "1");
   });
 });

@@ -37,7 +37,10 @@ type Game @entity {
   board2: BigInt!
 }
 
-type Stats @entity(singleton: true) {
-  id: Bytes!
+type Stat @entity {
+  id: String!
   gameId: BigInt!
+  proposals: BigInt!
+  moves: BigInt!
+  wins: BigInt!
 }

@@ -1,4 +1,4 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   GameProposed as GameProposedEvent,
   GameWon as GameWonEvent,
@@ -9,7 +9,7 @@ import {
   ProposalEvent,
   WinEvent,
   MoveEvent,
-  Stats,
+  Stat,
   Game
 } from "../generated/schema";
 
@@ -26,12 +26,16 @@ export function handleGameProposed(event: GameProposedEvent): void {
 
   entity.save();
 
-  let stats = Stats.load(Bytes.fromI32(0));
+  let stats = Stat.load("1");
   if (stats === null) {
-    stats = new Stats(Bytes.fromI32(0));
+    stats = new Stat("1");
     stats.gameId = BigInt.fromI32(1);
+    stats.proposals = BigInt.fromI32(1);
+    stats.moves = BigInt.fromI32(0);
+    stats.wins = BigInt.fromI32(0);
   } else {
     stats.gameId = stats.gameId.plus(BigInt.fromI32(1));
+    stats.proposals = stats.proposals.plus(BigInt.fromI32(1));
   }
 
   stats.save();
@@ -69,6 +73,13 @@ export function handleGameWon(event: GameWonEvent): void {
     game.finished = true;
     game.save();
   }
+
+  let stats = Stat.load("1");
+  if (stats === null) {
+  } else {
+    stats.wins = stats.wins.plus(BigInt.fromU32(1));
+    stats.save();
+  }
 }
 
 export function handleMovePerformed(event: MovePerformedEvent): void {
@@ -94,5 +105,12 @@ export function handleMovePerformed(event: MovePerformedEvent): void {
     game.board1 = boards.getValue0();
     game.board2 = boards.getValue1();
     game.save();
+  }
+
+  let stats = Stat.load("1");
+  if (stats === null) {
+  } else {
+    stats.moves = stats.moves.plus(BigInt.fromI32(1));
+    stats.save();
   }
 }
