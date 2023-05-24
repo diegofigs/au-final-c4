@@ -35,6 +35,8 @@ type Game @entity {
   finished: Boolean!
   board1: BigInt!
   board2: BigInt!
+  createdAt: BigInt!
+  updatedAt: BigInt!
 }
 
 type Stat @entity {

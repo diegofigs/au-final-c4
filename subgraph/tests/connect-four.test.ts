@@ -156,7 +156,7 @@ describe("Entities", () => {
     assert.fieldEquals("Game", gameId, "finished", "true");
   });
 
-  test("Stat track events count", () => {
+  test("Stat tracks events count", () => {
     assert.entityCount("Stat", 1);
     assert.fieldEquals("Stat", "1", "gameId", gameId);
     assert.fieldEquals("Stat", "1", "proposals", "1");

@@ -17,6 +17,8 @@ dataSources:
         - GameProposed
         - GameWon
         - MovePerformed
+        - Game
+        - Stat
       abis:
         - name: ConnectFour
           file: ./abis/ConnectFour.json

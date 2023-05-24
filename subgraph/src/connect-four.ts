@@ -13,6 +13,8 @@ import {
   Game
 } from "../generated/schema";
 
+const STATS_ID = "1";
+
 export function handleGameProposed(event: GameProposedEvent): void {
   let entity = new ProposalEvent(
     event.transaction.hash.concatI32(event.logIndex.toI32())
@@ -26,9 +28,9 @@ export function handleGameProposed(event: GameProposedEvent): void {
 
   entity.save();
 
-  let stats = Stat.load("1");
+  let stats = Stat.load(STATS_ID);
   if (stats === null) {
-    stats = new Stat("1");
+    stats = new Stat(STATS_ID);
     stats.gameId = BigInt.fromI32(1);
     stats.proposals = BigInt.fromI32(1);
     stats.moves = BigInt.fromI32(0);
@@ -46,6 +48,8 @@ export function handleGameProposed(event: GameProposedEvent): void {
   game.player2 = entity.challenger;
   game.moves = 0;
   game.finished = false;
+  game.createdAt = event.block.timestamp;
+  game.updatedAt = event.block.timestamp;
 
   let contract = ConnectFour.bind(event.address);
   let boards = contract.getBoards(stats.gameId);
@@ -71,10 +75,11 @@ export function handleGameWon(event: GameWonEvent): void {
   if (game === null) {
   } else {
     game.finished = true;
+    game.updatedAt = event.block.timestamp;
     game.save();
   }
 
-  let stats = Stat.load("1");
+  let stats = Stat.load(STATS_ID);
   if (stats === null) {
   } else {
     stats.wins = stats.wins.plus(BigInt.fromU32(1));
@@ -100,6 +105,7 @@ export function handleMovePerformed(event: MovePerformedEvent): void {
   if (game === null) {
   } else {
     game.moves = game.moves + 1;
+    game.updatedAt = event.block.timestamp;
     let contract = ConnectFour.bind(event.address);
     let boards = contract.getBoards(entity.gameId);
     game.board1 = boards.getValue0();
@@ -107,7 +113,7 @@ export function handleMovePerformed(event: MovePerformedEvent): void {
     game.save();
   }
 
-  let stats = Stat.load("1");
+  let stats = Stat.load(STATS_ID);
   if (stats === null) {
   } else {
     stats.moves = stats.moves.plus(BigInt.fromI32(1));
