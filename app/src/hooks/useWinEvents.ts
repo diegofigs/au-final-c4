@@ -5,8 +5,8 @@ const GET_WINS = gql`
     winEvents(
       skip: $offset
       first: $limit
-      sortBy: blockTimestamp
-      sortDirection: desc
+      orderBy: blockTimestamp
+      orderDirection: desc
     ) {
       id
       winner

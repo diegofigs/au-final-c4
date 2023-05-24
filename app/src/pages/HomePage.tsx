@@ -5,12 +5,14 @@ import { ChallengeForm } from "../components/ChallengeForm";
 import { SearchGameForm } from "../components/SearchGameForm";
 import { Panel } from "../components/Panel";
 import { toCompact } from "../utils";
-import { useGameProposalEvents } from "../hooks/useGameProposalEvents";
-import { useGameWonEvents } from "../hooks/useGameWonEvents";
-import { useMovePerformedEvents } from "../hooks/useMovePerformedEvents";
+import { useProposalEvents } from "../hooks/useProposalEvents";
+import { useWinEvents } from "../hooks/useWinEvents";
+import { useMoveEvents } from "../hooks/useMoveEvents";
 import { useGames } from "../hooks/useGames";
+import { useStats } from "../hooks/useStats";
 
 export function HomePage() {
+  const { data: stats } = useStats();
   return (
     <Layout>
       <div className="p-4 flex flex-col gap-4">
@@ -18,24 +20,24 @@ export function HomePage() {
           <SearchGameForm />
           <ChallengeForm />
         </div>
-        <Panel className="p-0 mx-auto">
+        <Panel className="p-0 sm:mx-auto">
           <h2 className="text-center text-lg px-6 pt-6">Games</h2>
           <GamesList />
         </Panel>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
           <Panel className="w-full p-0">
             <h3 className="text-center text-lg px-6 pt-6">Challenges</h3>
-            <GameProposalEvents />
+            <GameProposalEvents total={stats?.stat.proposals} />
           </Panel>
 
           <Panel className="w-full p-0">
             <h3 className="text-center text-lg px-6 pt-6">Moves</h3>
-            <GameMoveEvents />
+            <GameMoveEvents total={stats?.stat.moves} />
           </Panel>
 
           <Panel className="w-full p-0">
             <h3 className="text-center text-lg px-6 pt-6">Wins</h3>
-            <GameWonEvents />
+            <GameWonEvents total={stats?.stat.wins} />
           </Panel>
         </div>
       </div>
@@ -88,7 +90,7 @@ function GamesList() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {gamesData &&
-                  [...gamesData.games].map((game) => (
+                  gamesData.games.map((game) => (
                     <tr
                       key={`game-${game.gameId}`}
                       className="cursor-pointer"
@@ -120,10 +122,13 @@ function GamesList() {
   );
 }
 
-function GameProposalEvents() {
+type EventsTableProps = {
+  total?: number;
+};
+function GameProposalEvents({ total }: EventsTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const { data: proposals } = useGameProposalEvents(page, pageSize);
+  const { data: proposals } = useProposalEvents(page, pageSize);
   return (
     <>
       <div className="flex flex-col overflow-x-auto w-full">
@@ -174,15 +179,15 @@ function GameProposalEvents() {
           </div>
         </div>
       </div>
-      <Paginator page={page} setPage={setPage} pageSize={pageSize} />
+      <Paginator page={page} setPage={setPage} pageSize={pageSize} total={total} />
     </>
   );
 }
 
-function GameMoveEvents() {
+function GameMoveEvents({ total }: EventsTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const { data: moves } = useMovePerformedEvents(page, pageSize);
+  const { data: moves } = useMoveEvents(page, pageSize);
   const navigate = useNavigate();
   return (
     <>
@@ -247,15 +252,15 @@ function GameMoveEvents() {
           </div>
         </div>
       </div>
-      <Paginator page={page} setPage={setPage} pageSize={pageSize} />
+      <Paginator page={page} setPage={setPage} pageSize={pageSize} total={total} />
     </>
   );
 }
 
-function GameWonEvents() {
+function GameWonEvents({ total }: EventsTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  const { data: wins } = useGameWonEvents(page, pageSize);
+  const { data: wins } = useWinEvents(page, pageSize);
   const navigate = useNavigate();
   return (
     <>
@@ -311,7 +316,7 @@ function GameWonEvents() {
           </div>
         </div>
       </div>
-      <Paginator page={page} setPage={setPage} pageSize={pageSize} />
+      <Paginator page={page} setPage={setPage} pageSize={pageSize} total={total} />
     </>
   );
 }
@@ -339,7 +344,7 @@ function Paginator({ page, setPage, pageSize, total }: PaginatorProps) {
       </button>
       <span className="mx-4 self-center">
         Page {page}
-        {total && `of ${totalPages}`}
+        {total && ` of ${totalPages}`}
       </span>
       <button
         onClick={() => setPage(Math.min(totalPages, page + 1))}

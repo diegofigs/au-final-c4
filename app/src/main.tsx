@@ -7,7 +7,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { gnosisChiado, polygonMumbai } from "wagmi/chains";
+import { polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
 ]);
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai, gnosisChiado],
+  [polygonMumbai],
   [
     alchemyProvider({ apiKey: import.meta.env.VITE_APP_ALCHEMY_API_KEY }),
     publicProvider(),
@@ -47,7 +47,7 @@ const wagmiConfig = createConfig({
 });
 
 const client = new ApolloClient({
-  uri: "https://api.studio.thegraph.com/query/47213/chain-4-testnet/v0.0.5",
+  uri: "https://api.studio.thegraph.com/query/47213/chain-4-testnet/v0.0.12",
   cache: new InMemoryCache(),
 });
 

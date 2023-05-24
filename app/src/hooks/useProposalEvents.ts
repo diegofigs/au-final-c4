@@ -5,8 +5,8 @@ const GET_PROPOSALS = gql`
     proposalEvents(
       skip: $offset
       first: $limit
-      sortBy: blockTimestamp
-      sortDirection: desc
+      orderBy: blockTimestamp
+      orderDirection: desc
     ) {
       id
       challenger
