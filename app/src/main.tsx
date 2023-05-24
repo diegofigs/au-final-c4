@@ -14,6 +14,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { App } from "./App";
 import { HomePage } from "./pages/HomePage";
 import { GamePage } from "./pages/GamePage";
+import { EventsPage } from "./pages/EventsPage";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, Component: HomePage },
       { path: "/game/:gameId", Component: GamePage },
+      { path: "/events", Component: EventsPage },
     ],
   },
 ]);

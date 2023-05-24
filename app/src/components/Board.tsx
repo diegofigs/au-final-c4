@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useWaitForTransaction } from "wagmi";
 import { toBitsByColumn } from "../utils";
 import {
   useConnectFourMakeMove,
@@ -67,27 +67,34 @@ function BoardColumn(props: BoardColumnProps) {
   const isPlayer2Turn = moves % 2 === 1;
   const isSignerTurn =
     (isPlayer1 && isPlayer1Turn) || (isPlayer2 && isPlayer2Turn);
+  const isFilled = (board1[i][0] === "1" || board2[i][0] === "1");
+  const isDisabled = !isSignerTurn || finished || isFilled;
 
   const { config } = usePrepareConnectFourMakeMove({
     args: [BigInt(gameId), i],
     value: BigInt(0),
-    enabled: isSignerTurn,
+    enabled: !isDisabled,
   });
   const {
+    data: makeMoveTx,
     write: makeMove,
-    isLoading,
     isError,
-    isSuccess,
+    isLoading: isSubmitting,
     reset,
   } = useConnectFourMakeMove(config);
+  const {
+    isError: isFail,
+    isLoading,
+    isSuccess,
+  } = useWaitForTransaction({
+    hash: makeMoveTx?.hash,
+  });
   useEffect(() => {
-    if (isError || isSuccess) {
-      const timeout = setTimeout(() => reset(), 3000);
+    if (isError || isSuccess || isFail) {
+      const timeout = setTimeout(() => reset(), 2000);
       return () => clearTimeout(timeout);
     }
-  }, [isError, isSuccess, reset]);
-
-  const isDisabled = !isSignerTurn || finished;
+  }, [isError, isSuccess, isFail, reset]);
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -98,13 +105,18 @@ function BoardColumn(props: BoardColumnProps) {
   return (
     <button
       disabled={isDisabled}
-      className={`flex flex-col flex-grow board-col ${!isDisabled
+      data-loading={isLoading || isSubmitting}
+      data-error={isError || isFail}
+      data-success={isSuccess}
+      className={`flex flex-col flex-grow board-col ${
+        !isDisabled
           ? "hover:shadow-2xl hover:border-purple-500 transform transition-all duration-200 hover:scale-105 disabled:cursor-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:scale-105"
           : ""
-        } ${isLoading ? "animate-pulse" : ""} ${isSuccess ? "bg-green-500" : ""
-        } ${isError ? "animate-shake bg-red-500" : ""}`}
+      } data-[loading=true]:animate-pulse 
+        data-[error=true]:animate-shake data-[error=true]:bg-red-500
+        data-[success=true]:bg-green-500
+      `}
       onClick={() => {
-        reset();
         makeMove?.();
       }}
       onKeyDown={handleKeyPress}
@@ -117,17 +129,20 @@ function BoardColumn(props: BoardColumnProps) {
         return (
           <div
             key={`row-${i}-${j}`}
-            className={`w-full flex justify-center p-1 sm:p-2 xl:p-3 ${isLoading ? "animate-pulse" : ""
-              } ${isError ? "animate-shake bg-red-500" : ""} ${isSuccess ? "animate-drop" : ""
-              }`}
+            data-error={isError || isFail}
+            className={`w-full flex justify-center p-1 sm:p-2 xl:p-3
+              data-[error=true]:animate-shake data-[error=true]:bg-red-500
+            `}
           >
             <div
-              className={`disc ${isDisc ? "animate-bounce" : ""} ${isBoard1
+              data-disc={isDisc}
+              className={`disc data-[disc=true]:animate-bounce ${
+                isBoard1
                   ? "bg-red-500"
                   : isBoard2
-                    ? "bg-yellow-500"
-                    : "bg-gray-300"
-                }`}
+                  ? "bg-yellow-500"
+                  : "bg-gray-300"
+              }`}
             />
           </div>
         );

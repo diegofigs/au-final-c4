@@ -8,11 +8,11 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <header className="relative bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 shadow-lg p-6">
+    <header className="relative text-white">
+      <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 shadow-lg p-6">
         <div className="container mx-auto px-2">
-          <nav className="md:flex md:justify-between md:items-center text-white">
-            <div className="flex justify-between items-center">
+          <nav className="md:flex md:justify-between md:items-center">
+            <div className="flex justify-between items-center gap-2">
               <div>
                 <Link to="/" className="text-2xl font-bold">
                   Chain 4
@@ -34,7 +34,11 @@ export function Navbar() {
             </div>
             <div className="hidden md:block">
               <div className="mt-4 md:mt-0 md:flex md:items-center">
-                <div className="flex items-center"></div>
+                <div className="flex items-center">
+                  <div>
+                    <Link to="/events">Events</Link>
+                  </div>
+                </div>
                 <div className="mt-3 md:mt-0 md:ml-6">
                   <ConnectButton chainStatus="icon" />
                 </div>
@@ -42,7 +46,7 @@ export function Navbar() {
             </div>
           </nav>
         </div>
-      </header>
+      </div>
       <Transition
         show={isOpen}
         enter="transition ease-out duration-100 transform"
@@ -52,16 +56,22 @@ export function Navbar() {
         leaveFrom="opacity-100 scale-100"
         leaveTo="opacity-0 scale-95"
       >
-        <div className="absolute top-full w-full z-10 transition transform origin-top-right md:hidden">
-          <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 w-full shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
-            <div className="p-2 space-y-1">
-              <div className="flex justify-center">
+        <div className="absolute top-full w-full z-10 transition transform md:hidden">
+          <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 bg-opacity-100 w-full shadow-md ring-1 ring-black ring-opacity-5">
+            <div className="p-2">
+              <div className="flex flex-col items-center gap-2">
+                <div>
+                  <Link to="/" className="text-lg font-bold">Home</Link>
+                </div>
+                <div>
+                  <Link to="/events" className="text-lg font-bold">Events</Link>
+                </div>
                 <ConnectButton chainStatus="icon" />
               </div>
             </div>
           </div>
         </div>
       </Transition>
-    </>
+    </header>
   );
 }

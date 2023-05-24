@@ -17,20 +17,33 @@ export function SearchGameForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="flex items-center gap-1 md:gap-2 bg-white rounded-lg shadow overflow-hidden w-full md:max-w-lg lg:max-w-2xl p-2 text-sm md:text-md lg:text-lg"
+      className="
+      flex items-center gap-2 bg-white rounded-lg shadow 
+      w-full md:max-w-lg lg:max-w-2xl p-2 text-sm md:text-md lg:text-lg
+      "
     >
       <input
         type="number"
-        min={0}
+        min={1}
         value={search}
+        minLength={1}
+        required
         onChange={(e) => setSearch(e.target.value)}
-        className="flex-1 px-2 md:px-4 py-1 md:py-2"
+        className="
+        flex-1 px-2 md:px-4 py-1.5 md:py-2 rounded 
+        out-of-range:border-2 valid:border-2
+        invalid:border-red-500 valid:border-green-500
+        "
         placeholder="Game ID#"
       />
       <button
         type="submit"
         disabled={!search}
-        className="max-w-[110px] w-full px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 transition-colors text-white"
+        className="
+        max-w-[110px] w-full px-4 py-2 rounded-md 
+        bg-blue-500 hover:bg-blue-600 active:bg-blue-700 
+        transition-colors text-white
+        "
       >
         Search
       </button>

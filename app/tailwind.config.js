@@ -5,8 +5,10 @@ export default {
     extend: {
       keyframes: {
         bounce: {
-          "0%, 100%": { transform: "translateY(-25%)", opacity: "0" },
-          "50%": { transform: "translateY(0)", opacity: "1" },
+          "0%, 100%": { transform: "translateY(0)", opacity: "1" },
+          "20%, 80%": { transform: "translateY(-10%)", opacity: "1" },
+          "30%, 50%, 70%": { transform: "translateY(-20%)", opacity: "1" },
+          "40%, 60%": { transform: "translateY(-40%)", opacity: "1" },
         },
         drop: {
           "0%": { transform: "translateY(-100%)", opacity: "0" },
