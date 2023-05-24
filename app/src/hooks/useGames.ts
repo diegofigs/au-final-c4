@@ -2,7 +2,12 @@ import { gql, useQuery } from "@apollo/client";
 
 const GET_GAMES = gql`
   query GetGames {
-    games(orderBy: createdAt, orderDirection: desc) {
+    games(
+      skip: $offset
+      first: $limit
+      orderBy: createdAt
+      orderDirection: desc
+    ) {
       id
       gameId
       player1
@@ -13,6 +18,7 @@ const GET_GAMES = gql`
       board2
       createdAt
       updatedAt
+      winner
     }
   }
 `;
@@ -28,13 +34,19 @@ type Game = {
   board2: string;
   createdAt: string;
   updatedAt: string;
+  winner: string | null;
 };
 
 type GetGamesResult = {
   games: Game[];
 };
 
-export function useGames() {
-  const games = useQuery<GetGamesResult>(GET_GAMES);
+export function useGames(page: number, pageSize: number) {
+  const games = useQuery<GetGamesResult>(GET_GAMES, {
+    variables: {
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+    },
+  });
   return games;
 }

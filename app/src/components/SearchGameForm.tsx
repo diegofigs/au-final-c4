@@ -22,20 +22,22 @@ export function SearchGameForm() {
       w-full md:max-w-lg lg:max-w-2xl p-2 text-sm md:text-md lg:text-lg
       "
     >
-      <input
-        type="number"
-        min={1}
-        value={search}
-        minLength={1}
-        required
-        onChange={(e) => setSearch(e.target.value)}
-        className="
-        flex-1 px-2 md:px-4 py-1.5 md:py-2 rounded 
-        out-of-range:border-2 valid:border-2
-        invalid:border-red-500 valid:border-green-500
-        "
-        placeholder="Game ID#"
-      />
+      <div className="flex-1">
+        <input
+          placeholder="Game ID#"
+          type="number"
+          min={1}
+          value={search}
+          minLength={1}
+          required
+          onChange={(e) => setSearch(e.target.value)}
+          className="
+          w-full px-2 md:px-4 py-1.5 md:py-2 rounded 
+          out-of-range:border-2 valid:border-2
+          invalid:border-red-500 valid:border-green-500
+          "
+        />
+      </div>
       <button
         type="submit"
         disabled={!search}

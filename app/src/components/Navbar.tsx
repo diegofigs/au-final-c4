@@ -3,6 +3,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Link } from "react-router-dom";
 import { Transition } from "@headlessui/react";
 import { HiMenu, HiX } from "react-icons/hi";
+import logoUrl from '../assets/logo.svg';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,11 +14,12 @@ export function Navbar() {
         <div className="container mx-auto px-2">
           <nav className="md:flex md:justify-between md:items-center">
             <div className="flex justify-between items-center gap-2">
-              <div>
-                <Link to="/" className="text-2xl font-bold">
+              <Link to="/" className="flex items-center">
+                <img className="w-8 h-8 inline" src={logoUrl} alt="Connect 4 logo" />
+                <span className="text-2xl font-bold">
                   Chain 4
-                </Link>
-              </div>
+                </span>
+              </Link>
               <div className="-mr-2 -my-2 md:hidden">
                 <button
                   type="button"
@@ -59,7 +61,7 @@ export function Navbar() {
         <div className="absolute top-full w-full z-10 transition transform md:hidden">
           <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 bg-opacity-100 w-full shadow-md ring-1 ring-black ring-opacity-5">
             <div className="p-2">
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-4">
                 <div>
                   <Link to="/" className="text-lg font-bold">Home</Link>
                 </div>

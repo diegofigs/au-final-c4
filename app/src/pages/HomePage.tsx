@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiCheckCircle, HiXCircle } from "react-icons/hi";
 import { ChallengeForm } from "../components/ChallengeForm";
@@ -6,6 +6,8 @@ import { SearchGameForm } from "../components/SearchGameForm";
 import { Panel } from "../components/Panel";
 import { toCompact } from "../utils";
 import { useGames } from "../hooks/useGames";
+import { Paginator } from "../components/Paginator";
+import { useStats } from "../hooks/useStats";
 
 export function HomePage() {
   return (
@@ -25,7 +27,10 @@ export function HomePage() {
 }
 
 function GamesList() {
-  const { data: gamesData } = useGames();
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const { data: gamesData } = useGames(1, 10);
+  const { data: stats } = useStats();
   const navigate = useNavigate();
   return (
     <div className="border-b border-gray-200">
@@ -65,6 +70,12 @@ function GamesList() {
                   >
                     Finished
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Winner
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -94,6 +105,9 @@ function GamesList() {
                       >
                         {game.finished ? <HiCheckCircle /> : <HiXCircle />}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {game.winner ? toCompact(game.winner) : '-'}
+                      </td>
                     </tr>
                   ))}
               </tbody>
@@ -101,6 +115,12 @@ function GamesList() {
           </div>
         </div>
       </div>
+      <Paginator
+        page={page}
+        setPage={setPage}
+        pageSize={pageSize}
+        total={parseInt(stats?.stat.gameId || '0')}
+      />
     </div>
   );
 }
