@@ -37,6 +37,7 @@ type Game @entity {
   board2: BigInt!
   createdAt: BigInt!
   updatedAt: BigInt!
+  winner: Bytes
 }
 
 type Stat @entity {

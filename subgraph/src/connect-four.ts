@@ -76,6 +76,7 @@ export function handleGameWon(event: GameWonEvent): void {
   } else {
     game.finished = true;
     game.updatedAt = event.block.timestamp;
+    game.winner = event.params.winner;
     game.save();
   }
 
