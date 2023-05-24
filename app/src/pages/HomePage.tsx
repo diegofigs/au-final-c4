@@ -1,5 +1,6 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { HiCheckCircle, HiXCircle } from "react-icons/hi";
 import { ChallengeForm } from "../components/ChallengeForm";
 import { SearchGameForm } from "../components/SearchGameForm";
 import { Panel } from "../components/Panel";
@@ -8,7 +9,6 @@ import { useGameProposalEvents } from "../hooks/useGameProposalEvents";
 import { useGameWonEvents } from "../hooks/useGameWonEvents";
 import { useMovePerformedEvents } from "../hooks/useMovePerformedEvents";
 import { useGames } from "../hooks/useGames";
-import { HiCheckCircle, HiXCircle } from "react-icons/hi";
 
 export function HomePage() {
   return (
@@ -121,22 +121,17 @@ function GamesList() {
 }
 
 function GameProposalEvents() {
-  const { data: proposals } = useGameProposalEvents();
-  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const { data: proposals } = useGameProposalEvents(page, pageSize);
   return (
-    <div className="border-b border-gray-200">
+    <>
       <div className="flex flex-col overflow-x-auto w-full">
         <div className="sm:-mx-2">
           <div className="inline-block py-2 sm:px-2">
             <table className="min-w-full text-left text-sm font-light divide-y divide-gray-200">
               <thead>
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
-                  >
-                    #
-                  </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -159,55 +154,50 @@ function GameProposalEvents() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {proposals &&
-                  [...proposals.proposalEvents]
-                    .sort(
-                      (a, b) =>
-                        parseInt(b.blockNumber) - parseInt(a.blockNumber)
-                    )
-                    .map((proposalEvent, index, events) => (
-                      <tr
-                        key={proposalEvent.id}
-                        className="cursor-pointer"
-                        onClick={() =>
-                          navigate(`/game/${events.length - index}`)
-                        }
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {events.length - index}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {toCompact(proposalEvent.challenged)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {toCompact(proposalEvent.challenger)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(
-                            Number(proposalEvent.blockTimestamp) * 1000
-                          ).toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
+                  proposals.proposalEvents.map((proposalEvent) => (
+                    <tr key={proposalEvent.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {toCompact(proposalEvent.challenged)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {toCompact(proposalEvent.challenger)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(
+                          Number(proposalEvent.blockTimestamp) * 1000
+                        ).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
+      <Paginator page={page} setPage={setPage} pageSize={pageSize} />
+    </>
   );
 }
 
 function GameMoveEvents() {
-  const { data: moves } = useMovePerformedEvents();
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const { data: moves } = useMovePerformedEvents(page, pageSize);
   const navigate = useNavigate();
   return (
-    <div className="border-b border-gray-200">
+    <>
       <div className="flex flex-col overflow-x-auto w-full">
         <div className="sm:-mx-2">
           <div className="inline-block py-2 sm:px-2">
             <table className="min-w-full text-left text-sm font-light divide-y divide-gray-200">
               <thead>
                 <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Mover
+                  </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -230,44 +220,45 @@ function GameMoveEvents() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {moves &&
-                  [...moves.moveEvents]
-                    .sort(
-                      (a, b) =>
-                        parseInt(b.blockNumber) - parseInt(a.blockNumber)
-                    )
-                    .map((moveEvent) => (
-                      <tr
-                        key={moveEvent.id}
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/game/${moveEvent.gameId}`)}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {moveEvent.gameId}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {parseInt(moveEvent.row) + 1}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(
-                            Number(moveEvent.blockTimestamp) * 1000
-                          ).toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
+                  moves.moveEvents.map((moveEvent) => (
+                    <tr
+                      key={moveEvent.id}
+                      className="cursor-pointer"
+                      onClick={() => navigate(`/game/${moveEvent.gameId}`)}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {toCompact(moveEvent.mover)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {moveEvent.gameId}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {moveEvent.row + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(
+                          Number(moveEvent.blockTimestamp) * 1000
+                        ).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
+      <Paginator page={page} setPage={setPage} pageSize={pageSize} />
+    </>
   );
 }
 
 function GameWonEvents() {
-  const { data: wins } = useGameWonEvents();
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const { data: wins } = useGameWonEvents(page, pageSize);
   const navigate = useNavigate();
   return (
-    <div className="border-b border-gray-200">
+    <>
       <div className="flex flex-col overflow-x-auto w-full">
         <div className="sm:-mx-2">
           <div className="inline-block py-2 sm:px-2">
@@ -296,35 +287,70 @@ function GameWonEvents() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {wins &&
-                  [...wins.winEvents]
-                    .sort(
-                      (a, b) =>
-                        parseInt(b.blockNumber) - parseInt(a.blockNumber)
-                    )
-                    .map((winEvent) => (
-                      <tr
-                        key={winEvent.id}
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/game/${winEvent.gameId}`)}
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {toCompact(winEvent.winner)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {winEvent.gameId}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(
-                            Number(winEvent.blockTimestamp) * 1000
-                          ).toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
+                  wins.winEvents.map((winEvent) => (
+                    <tr
+                      key={winEvent.id}
+                      className="cursor-pointer"
+                      onClick={() => navigate(`/game/${winEvent.gameId}`)}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {toCompact(winEvent.winner)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {winEvent.gameId}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(
+                          Number(winEvent.blockTimestamp) * 1000
+                        ).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
         </div>
       </div>
+      <Paginator page={page} setPage={setPage} pageSize={pageSize} />
+    </>
+  );
+}
+
+type PaginatorProps = {
+  page: number;
+  setPage: (value: number) => void;
+  pageSize: number;
+  total?: number;
+};
+function Paginator({ page, setPage, pageSize, total }: PaginatorProps) {
+  const totalPages = total ? Math.ceil(total / pageSize) : 0;
+
+  return (
+    <div className="flex justify-center my-2 text-gray-500 bg-white">
+      <button
+        onClick={() => setPage(Math.max(1, page - 1))}
+        disabled={page <= 1}
+        className={`px-4 py-2 border border-gray-300 rounded mr-2 ${page <= 1
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-gray-200 cursor-pointer"
+          }`}
+      >
+        Prev
+      </button>
+      <span className="mx-4 self-center">
+        Page {page}
+        {total && `of ${totalPages}`}
+      </span>
+      <button
+        onClick={() => setPage(Math.min(totalPages, page + 1))}
+        disabled={page >= totalPages}
+        className={`px-4 py-2 border border-gray-300 rounded ml-2 ${page >= totalPages
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-gray-200 cursor-pointer"
+          }`}
+      >
+        Next
+      </button>
     </div>
   );
 }

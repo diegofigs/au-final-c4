@@ -1,11 +1,11 @@
-import { FormEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function SearchGameForm() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const onSubmit = useCallback(
-    (e: FormEvent) => {
+    (e: React.FormEvent) => {
       e.preventDefault();
       if (search) {
         navigate(`/game/${search}`);
@@ -21,14 +21,16 @@ export function SearchGameForm() {
     >
       <input
         type="number"
+        min={0}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="flex-1 px-2 md:px-4 py-1 md:py-2 text-blue-700"
-        placeholder="Game ID"
+        className="flex-1 px-2 md:px-4 py-1 md:py-2"
+        placeholder="Game ID#"
       />
       <button
         type="submit"
-        className="max-w-[110px] w-full px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition-colors text-white"
+        disabled={!search}
+        className="max-w-[110px] w-full px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 transition-colors text-white"
       >
         Search
       </button>

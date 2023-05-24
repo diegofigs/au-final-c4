@@ -47,13 +47,13 @@ function GameRow({ game }: GameRowProps) {
           id="player1"
           className="inline-block rounded px-3 py-1 bg-blue-500 text-white"
         >
-          P1: {toCompact(player1, 2)}
+          P1: {toCompact(player1)}
         </span>
         <span
           id="player2"
           className="inline-block rounded px-3 py-1 bg-red-500 text-white"
         >
-          P2: {toCompact(player2, 2)}
+          P2: {toCompact(player2)}
         </span>
         <span
           id="moves"

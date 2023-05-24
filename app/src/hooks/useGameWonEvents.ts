@@ -2,7 +2,12 @@ import { gql, useQuery } from "@apollo/client";
 
 const GET_WINS = gql`
   query GetWins {
-    winEvents {
+    winEvents(
+      skip: $offset
+      first: $limit
+      sortBy: blockTimestamp
+      sortDirection: desc
+    ) {
       id
       winner
       gameId
@@ -24,7 +29,12 @@ type GetWinsResult = {
   winEvents: WinEvent[];
 };
 
-export function useGameWonEvents() {
-  const wins = useQuery<GetWinsResult>(GET_WINS);
+export function useGameWonEvents(page: number, pageSize: number) {
+  const wins = useQuery<GetWinsResult>(GET_WINS, {
+    variables: {
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+    },
+  });
   return wins;
 }

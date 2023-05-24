@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Address, useChainId, useEnsAddress, usePublicClient } from "wagmi";
+import { polygonMumbai } from "wagmi/chains";
 import { isAddress } from "viem";
 import {
   useConnectFourChallenge,
@@ -7,8 +9,6 @@ import {
 } from "../generated";
 import { connectFourABI } from "../generated";
 import { connectFourAddress } from "../generated";
-import { polygonMumbai } from "wagmi/chains";
-import { useNavigate } from "react-router-dom";
 
 export function ChallengeForm() {
   const [opponent, setOpponent] = useState<Address | string>("");
@@ -25,12 +25,19 @@ export function ChallengeForm() {
     writeAsync: challenge,
     isLoading,
     isError,
+    reset,
   } = useConnectFourChallenge(config);
   const navigate = useNavigate();
 
   const id = useChainId();
   const client = usePublicClient();
 
+  useEffect(() => {
+    if (isError) {
+      const timeout = setTimeout(() => reset(), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isError, reset]);
   return (
     <form
       onSubmit={async (e) => {
@@ -59,7 +66,8 @@ export function ChallengeForm() {
       />
       <button
         type="submit"
-        className={`max-w-[110px] w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 rounded-md transition-colors text-white
+        disabled={isLoading || isError || !challenge}
+        className={`max-w-[110px] w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 rounded-md transition-colors text-white
         ${isLoading ? "animate-pulse" : ""} ${isError ? "animate-shake" : ""}`}
       >
         Challenge

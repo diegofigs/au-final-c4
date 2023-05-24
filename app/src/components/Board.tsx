@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useAccount } from "wagmi";
 import { toBitsByColumn } from "../utils";
 import {
   useConnectFourMakeMove,
   usePrepareConnectFourMakeMove,
 } from "../generated";
 import { Boards, Game } from "../types";
-import { useAccount } from "wagmi";
 import { Panel } from "./Panel";
 
 type BoardProps = {
@@ -58,9 +58,20 @@ type BoardColumnProps = {
 };
 function BoardColumn(props: BoardColumnProps) {
   const { game, gameId, column, columnIndex: i, board1, board2 } = props;
+  const [player1, player2, moves, finished] = game;
+
+  const signer = useAccount();
+  const isPlayer1 = signer.address === player1;
+  const isPlayer2 = signer.address === player2;
+  const isPlayer1Turn = moves % 2 === 0;
+  const isPlayer2Turn = moves % 2 === 1;
+  const isSignerTurn =
+    (isPlayer1 && isPlayer1Turn) || (isPlayer2 && isPlayer2Turn);
+
   const { config } = usePrepareConnectFourMakeMove({
     args: [BigInt(gameId), i],
     value: BigInt(0),
+    enabled: isSignerTurn,
   });
   const {
     write: makeMove,
@@ -69,17 +80,14 @@ function BoardColumn(props: BoardColumnProps) {
     isSuccess,
     reset,
   } = useConnectFourMakeMove(config);
-  const signer = useAccount();
+  useEffect(() => {
+    if (isError || isSuccess) {
+      const timeout = setTimeout(() => reset(), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isError, isSuccess, reset]);
 
-  const [player1, player2, moves, finished] = game;
-  const isPlayer1 = signer.address === player1;
-  const isPlayer2 = signer.address === player2;
-  const isPlayer1Turn = moves % 2 === 0;
-  const isPlayer2Turn = moves % 2 === 1;
-  const isCurrentTurn =
-    (isPlayer1 && isPlayer1Turn) || (isPlayer2 && isPlayer2Turn);
-  const isActive = !finished;
-  const isDisabled = !isCurrentTurn || !isActive;
+  const isDisabled = !isSignerTurn || finished;
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -93,8 +101,8 @@ function BoardColumn(props: BoardColumnProps) {
       className={`flex flex-col flex-grow board-col ${!isDisabled
           ? "hover:shadow-2xl hover:border-purple-500 transform transition-all duration-200 hover:scale-105 disabled:cursor-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:scale-105"
           : ""
-        } ${isLoading ? "animate-pulse" : ""} ${isError ? "animate-shake bg-red-500" : ""
-        }`}
+        } ${isLoading ? "animate-pulse" : ""} ${isSuccess ? "bg-green-500" : ""
+        } ${isError ? "animate-shake bg-red-500" : ""}`}
       onClick={() => {
         reset();
         makeMove?.();

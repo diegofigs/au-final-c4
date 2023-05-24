@@ -21,8 +21,8 @@ type Game = {
   gameId: string;
   player1: string;
   player2: string;
-  moves: string;
-  finished: string;
+  moves: number;
+  finished: boolean;
   board1: string;
   board2: string;
 };

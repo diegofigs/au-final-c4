@@ -2,7 +2,12 @@ import { gql, useQuery } from "@apollo/client";
 
 const GET_PROPOSALS = gql`
   query GetProposals {
-    proposalEvents {
+    proposalEvents(
+      skip: $offset
+      first: $limit
+      sortBy: blockTimestamp
+      sortDirection: desc
+    ) {
       id
       challenger
       challenged
@@ -24,7 +29,12 @@ type GetProposalsResult = {
   proposalEvents: ProposalEvent[];
 };
 
-export function useGameProposalEvents() {
-  const proposals = useQuery<GetProposalsResult>(GET_PROPOSALS);
+export function useGameProposalEvents(page: number, pageSize: number) {
+  const proposals = useQuery<GetProposalsResult>(GET_PROPOSALS, {
+    variables: {
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+    },
+  });
   return proposals;
 }

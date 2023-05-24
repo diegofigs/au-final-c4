@@ -30,7 +30,7 @@ export function padTo(length: number, value: string) {
 }
 
 export function toCompact(address: Address | string, chars = 4) {
-  return `${address.slice(0, 2 + chars)}...${address.slice(
+  return `${address.slice(0, chars)}...${address.slice(
     address.length - chars,
     address.length
   )}`;
