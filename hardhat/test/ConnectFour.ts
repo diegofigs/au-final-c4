@@ -1,13 +1,9 @@
-import {
-  impersonateAccount,
-  loadFixture,
-  stopImpersonatingAccount,
-} from "@nomicfoundation/hardhat-network-helpers";
+import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import "@nomiclabs/hardhat-ethers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("ConnectFour", function() {
+describe("ConnectFour", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setup once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
@@ -20,8 +16,8 @@ describe("ConnectFour", function() {
     return { connectFour };
   }
 
-  describe("Deployment", function() {
-    it("should have a default game state", async function() {
+  describe("Deployment", function () {
+    it("should have a default game state", async function () {
       const { connectFour } = await loadFixture(deployFixture);
       const [player1, player2, moves, finished] = await connectFour.getGame(
         "0"
@@ -33,5 +29,4 @@ describe("ConnectFour", function() {
       expect(finished).to.equal(false);
     });
   });
-
 });

@@ -19,16 +19,18 @@ export function GamePage() {
 
   return (
     <div className="container mx-auto sm:p-2 md:p-4">
-      <Panel className="flex flex-col gap-1">
-        <h2 className="text-xl whitespace-nowrap">Game #{gameId}</h2>
-        {gameData && gameId !== undefined && <GameRow game={[...gameData]} />}
-        {boardData && gameId && gameData && (
-          <Board
-            gameId={parseInt(gameId)}
-            boards={[...boardData]}
-            game={[...gameData]}
-          />
-        )}
+      <Panel className="shadow-none rounded-none sm:shadow-md sm:rounded-md h-full">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl whitespace-nowrap">Game #{gameId}</h2>
+          {gameData && gameId !== undefined && <GameRow game={[...gameData]} />}
+          {boardData && gameId && gameData && (
+            <Board
+              gameId={parseInt(gameId)}
+              boards={[...boardData]}
+              game={[...gameData]}
+            />
+          )}
+        </div>
       </Panel>
     </div>
   );
@@ -63,8 +65,9 @@ function GameRow({ game }: GameRowProps) {
         </span>
         <span
           id="finished"
-          className={`inline-block rounded px-3 py-1 text-white ${finished ? "bg-green-500" : "bg-gray-500"
-            }`}
+          className={`inline-block rounded px-3 py-1 text-white ${
+            finished ? "bg-green-500" : "bg-gray-500"
+          }`}
         >
           Finished: {finished ? "Yes" : "No"}
         </span>
@@ -84,18 +87,20 @@ function TurnIndicator({ isPlayer1Turn }: TurnIndicatorProps) {
   return (
     <div className="flex rounded-md shadow-sm" role="group">
       <span
-        className={`px-4 py-2 text-sm font-medium text-gray-900 border border-gray-200 rounded-l-md hover:text-white dark:border-gray-600 dark:text-white dark:hover:text-white ${isPlayer1Turn
+        className={`px-4 py-2 text-sm font-medium text-gray-900 border border-gray-200 rounded-l-md hover:text-white dark:border-gray-600 dark:text-white dark:hover:text-white ${
+          isPlayer1Turn
             ? "bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 text-white"
-            : "bg-gray-400 opacity-75"
-          }`}
+            : "bg-gray-400"
+        }`}
       >
         Player 1
       </span>
       <span
-        className={`px-4 py-2 text-sm font-medium text-gray-900 border-t border-b border-gray-200 rounded-r-md hover:text-white dark:border-gray-600 dark:text-white dark:hover:text-white ${!isPlayer1Turn
+        className={`px-4 py-2 text-sm font-medium text-gray-900 border-t border-b border-gray-200 rounded-r-md hover:text-white dark:border-gray-600 dark:text-white dark:hover:text-white ${
+          !isPlayer1Turn
             ? "bg-gradient-to-r from-red-400 via-red-500 to-yellow-500 text-white"
-            : "bg-gray-400 opacity-75"
-          }`}
+            : "bg-gray-400"
+        }`}
       >
         Player 2
       </span>
