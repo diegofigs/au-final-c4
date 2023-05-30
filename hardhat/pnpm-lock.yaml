@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 devDependencies:
+  '@nomicfoundation/hardhat-foundry':
+    specifier: ^1.0.1
+    version: 1.0.1(hardhat@2.14.0)
   '@nomicfoundation/hardhat-network-helpers':
     specifier: ^1.0.8
     version: 1.0.8(hardhat@2.14.0)
@@ -620,6 +623,15 @@ packages:
       ethers: 5.7.2
       hardhat: 2.14.0(ts-node@10.9.1)(typescript@5.0.4)
       ordinal: 1.0.3
+    dev: true
+
+  /@nomicfoundation/hardhat-foundry@1.0.1(hardhat@2.14.0):
+    resolution: {integrity: sha512-sQEaX3rik6Gclmek4MqCyOc9+vOM0ZS40eUARrB6K9t6wthqCwJ29CClfxLdbrjn/3MM5hX8ioD+/9OqdGVxSQ==}
+    peerDependencies:
+      hardhat: ^2.12.6
+    dependencies:
+      chalk: 2.4.2
+      hardhat: 2.14.0(ts-node@10.9.1)(typescript@5.0.4)
     dev: true
 
   /@nomicfoundation/hardhat-network-helpers@1.0.8(hardhat@2.14.0):

@@ -3,6 +3,7 @@ dotenv.config();
 
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-foundry";
 
 let accounts = {
   mnemonic: process.env.MNEMONIC,
