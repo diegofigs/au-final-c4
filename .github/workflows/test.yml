@@ -26,9 +26,11 @@ jobs:
         run: |
           forge --version
           forge build --sizes
+        working-directory: ./hardhat
         id: build
 
       - name: Run Forge tests
         run: |
           forge test -vvv
+        working-directory: ./hardhat
         id: test
