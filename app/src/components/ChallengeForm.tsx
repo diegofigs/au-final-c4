@@ -6,6 +6,7 @@ import {
   useConnectFourChallenge,
   usePrepareConnectFourChallenge,
 } from "../generated";
+import { useApolloClient } from "@apollo/client";
 
 export function ChallengeForm() {
   const [opponent, setOpponent] = useState<Address | string>("");
@@ -24,28 +25,30 @@ export function ChallengeForm() {
     isLoading,
     isError,
   } = useConnectFourChallenge(config);
-  const {
-    isLoading: isSubmitting,
-    isSuccess,
-  } = useWaitForTransaction({
+  const { isLoading: isSubmitting, isSuccess } = useWaitForTransaction({
     hash: challengeTx?.hash,
   });
   const navigate = useNavigate();
 
   const gameId = data?.result;
+  const client = useApolloClient();
   useEffect(() => {
     if (isSuccess && gameId) {
-      navigate(`/game/${gameId.toString()}`);
+      client
+        .refetchQueries({
+          include: ["GetGames"],
+        })
+        .then(() => {
+          navigate(`/game/${gameId.toString()}`);
+        });
     }
-  }, [isSuccess, gameId, navigate]);
+  }, [isSuccess, gameId, client, navigate]);
 
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault();
-        if (gameId) {
-          challenge?.();
-        }
+        challenge?.();
       }}
       className="
       flex items-center gap-2 bg-white rounded-lg shadow 

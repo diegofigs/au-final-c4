@@ -17,7 +17,7 @@ export function HomePage() {
           <SearchGameForm />
           <ChallengeForm />
         </div>
-        <Panel className="p-0 sm:mx-auto">
+        <Panel className="p-0 md:mx-auto">
           <h2 className="text-center text-lg px-6 pt-6">Games</h2>
           <GamesList />
         </Panel>
@@ -33,7 +33,7 @@ function GamesList() {
   const { data: stats } = useStats();
   const navigate = useNavigate();
   return (
-    <div className="border-b border-gray-200">
+    <div className="flex flex-col border-b border-gray-200">
       <div className="flex flex-col overflow-x-auto w-full">
         <div className="sm:-mx-2">
           <div className="inline-block py-2">
@@ -106,7 +106,7 @@ function GamesList() {
                         {game.finished ? <HiCheckCircle /> : <HiXCircle />}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {game.winner ? toCompact(game.winner) : '-'}
+                        {game.winner ? toCompact(game.winner) : "-"}
                       </td>
                     </tr>
                   ))}
@@ -119,7 +119,7 @@ function GamesList() {
         page={page}
         setPage={setPage}
         pageSize={pageSize}
-        total={parseInt(stats?.stat.gameId || '0')}
+        total={parseInt(stats?.stat.gameId || "0")}
       />
     </div>
   );
