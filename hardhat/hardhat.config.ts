@@ -3,14 +3,15 @@ dotenv.config();
 
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "@nomicfoundation/hardhat-foundry";
+import "@openzeppelin/hardhat-upgrades";
+// import "@nomicfoundation/hardhat-foundry";
 
 let accounts = {
   mnemonic: process.env.MNEMONIC,
 };
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.10",
+  solidity: "0.8.18",
   //2) select the default network "gnosis" or "chiado"
   networks: {
     hardhat: {},
