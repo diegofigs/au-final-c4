@@ -2,7 +2,7 @@
 
 A Web3 dapp that allows users to challenge and play Connect 4 matches with others.
 The contract was authored by Miguel Piedrafita and is deployed on the Mumbai testnet
-at address (0x2A20791964a1275d8f3d24f959185E1551e2B6C9)[https://mumbai.polygonscan.com/address/0x2a20791964a1275d8f3d24f959185e1551e2b6c9].
+at address [0x2A20791964a1275d8f3d24f959185E1551e2B6C9](https://mumbai.polygonscan.com/address/0x2a20791964a1275d8f3d24f959185e1551e2b6c9).
 Hardhat is used to test and deploy contract, providing TS native tooling. 
 The Graph is used to keep track of games, events and protocol stats.
 
