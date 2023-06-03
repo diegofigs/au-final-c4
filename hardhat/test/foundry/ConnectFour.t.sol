@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import {DSTest} from 'forge-std/Test.sol';
-import './Hevm.sol';
+import {DSTest, Vm as Hevm, stdError} from 'forge-std/Test.sol';
 import '../../contracts/ConnectFour.sol';
 
 contract User {}
