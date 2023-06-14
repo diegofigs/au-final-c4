@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {DSTest, Vm as Hevm, stdError} from 'forge-std/Test.sol';
-import '../../contracts/ConnectFour.sol';
+import 'contracts/ConnectFour.sol';
 
 contract User {}
 
@@ -32,6 +32,9 @@ contract ConnectFourTest is DSTest {
 		assertEq(player2, address(this));
 		assertEq(moves, 0);
 		assertTrue(!finished);
+
+    (uint b1, uint b2) = game.getBoards(0);
+    assertEq(b1, b2);
 	}
 
 	function testCanMakeMove() public {
