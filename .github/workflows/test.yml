@@ -3,7 +3,8 @@ name: test
 on:
   workflow_dispatch:
   push:
-    - main
+    branches:
+      - main
 
 env:
   FOUNDRY_PROFILE: ci
