@@ -3,31 +3,32 @@ dotenv.config();
 
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "@openzeppelin/hardhat-upgrades";
-// import "@nomicfoundation/hardhat-foundry";
+import "@nomicfoundation/hardhat-foundry";
 
 let accounts = {
   mnemonic: process.env.MNEMONIC,
 };
 
+const GASPRICE_API = {
+  polygon: "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice",
+  zkEvm: `https://api-zkevm.polygonscan.com/api?module=proxy&action=eth_gasPrice&apiKey=${process.env.ZKEVMSCAN_API_KEY}`,
+};
+
 const config: HardhatUserConfig = {
-  solidity: "0.8.18",
-  //2) select the default network "gnosis" or "chiado"
+  solidity: {
+    version: "0.8.18",
+    settings: {
+      optimizer: {
+        enabled: process.env.NODE_ENV === "production" ? true : false,
+      },
+    },
+  },
+  gasReporter: {
+    token: "MATIC",
+    gasPriceApi: GASPRICE_API.polygon,
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+  },
   networks: {
-    hardhat: {},
-    gnosis: {
-      url: "https://rpc.gnosischain.com",
-      accounts: accounts,
-    },
-    chiado: {
-      url: "https://rpc.chiadochain.net",
-      gasPrice: 1000000000,
-      accounts: accounts,
-    },
-    sepolia: {
-      url: process.env.ALCHEMY_SEPOLIA_URL,
-      accounts,
-    },
     mumbai: {
       url: process.env.ALCHEMY_MUMBAI_URL,
       accounts,
@@ -35,11 +36,9 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      //4) Insert your Gnosisscan API key
-      //blockscout explorer verification does not require keys
-      chiado: "your key",
-      gnosis: process.env.GNOSISSCAN_API_KEY || "",
+      // blockscout explorer verification does not require keys
       polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
+      zkEvm: process.env.ZKEVMSCAN_API_KEY || "",
     },
   },
 };
