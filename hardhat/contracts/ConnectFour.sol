@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity 0.8.18;
 
 /// @title Connect Four
 /// @author Miguel Piedrafita
@@ -55,7 +55,7 @@ contract ConnectFour {
 	uint64[7] internal initialHeight;
 
 	/// @notice The indexes of the helper top column of the 7x6(+1) board
-	uint64 internal constant topColumn = 283691315109952;
+	uint64 internal constant TOP_COLUMN = 283691315109952;
 
 	/// @notice Used as a counter for the next game index.
 	/// @dev Initialised at 1 because it makes the first transaction slightly cheaper.
@@ -67,7 +67,7 @@ contract ConnectFour {
 
 	/// @notice Deploys a ConnectFour instance
 	/// @dev Used to compute the value of `initialHeight`, since we cannot make it a constant (or immutable).
-	constructor() payable {
+	constructor() {
 		unchecked {
 			for (uint8 i = 0; i < 7; i++) {
 				initialHeight[i] = uint64(7 * i);
@@ -78,7 +78,7 @@ contract ConnectFour {
 	/// @notice Challenge another address to a game of connect four
 	/// @param opponent The address you want to play against
 	/// @return The ID of the newly-created game
-	function challenge(address opponent) public payable returns (uint256) {
+	function challenge(address opponent) public returns (uint256) {
 		Game memory game = Game({
 			player1: opponent,
 			player2: msg.sender,
@@ -96,30 +96,30 @@ contract ConnectFour {
 	}
 
 	/// @notice Perform a move on an active game
-	/// @param _gameId The ID of the game you want to perform your move on
+	/// @param id The ID of the game you want to perform your move on
 	/// @param row The row on where you want to drop your piece
-	function makeMove(uint256 _gameId, uint8 row) public payable {
-		Game storage game = getGame[_gameId];
+	function makeMove(uint256 id, uint8 row) public {
+		Game storage game = getGame[id];
 		if (msg.sender != (game.moves & 1 == 0 ? game.player1 : game.player2)) revert Unauthorized();
 		if (game.finished) revert GameFinished();
 
-		emit MovePerformed(msg.sender, _gameId, row);
+		emit MovePerformed(msg.sender, id, row);
 
 		game.board[game.moves & 1] ^= uint64(1) << game.height[row]++;
 
-		if ((game.board[game.moves & 1] & topColumn) != 0) revert InvalidMove();
+		if ((game.board[game.moves & 1] & TOP_COLUMN) != 0) revert InvalidMove();
 
-		if (didPlayerWin(_gameId, game.moves++ & 1)) {
+		if (didPlayerWin(id, game.moves++ & 1)) {
 			game.finished = true;
-			emit GameWon(msg.sender, _gameId);
+			emit GameWon(msg.sender, id);
 		}
 	}
 
 	/// @notice Check wether one of the players for a certain game has won the match
-	/// @param _gameId The ID for the game you want to perform the check on
+	/// @param id The ID for the game you want to perform the check on
 	/// @param side Which side of the board you want to check (0 or 1).
-	function didPlayerWin(uint256 _gameId, uint8 side) public view returns (bool) {
-		uint64 board = getGame[_gameId].board[side];
+	function didPlayerWin(uint256 id, uint8 side) public view returns (bool) {
+		uint64 board = getGame[id].board[side];
 		uint8[4] memory directions = [1, 7, 6, 8];
 
 		uint64 bb;
@@ -134,8 +134,8 @@ contract ConnectFour {
 		return false;
 	}
 
-	function getBoards(uint256 _gameId) public view returns (uint64, uint64) {
-		uint64[2] memory boards = getGame[_gameId].board;
+	function getBoards(uint256 id) public view returns (uint64, uint64) {
+		uint64[2] memory boards = getGame[id].board;
 
 		return (boards[0], boards[1]);
 	}
