@@ -38,3 +38,9 @@ jobs:
           forge test -vvv
         working-directory: ./hardhat
         id: test
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.3.0
+        with:
+          ignore-compile: true
+          target: ./hardhat/contracts/ConnectFour.sol
