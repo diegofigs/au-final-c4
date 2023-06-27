@@ -36,6 +36,5 @@ jobs:
         uses: crytic/slither-action@v0.3.0
         id: slither
         with:
-          ignore-compile: true
           target: ./hardhat/contracts/ConnectFour.sol
           fail-on: none
